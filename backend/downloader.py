@@ -1,4 +1,4 @@
-"""
+﻿"""
 Logique d'extraction et de téléchargement (yt-dlp).
 
 AVERTISSEMENT : application à but éducatif uniquement. Le téléchargement de
@@ -47,7 +47,9 @@ BASE_OPTS = {
     "quiet": True,
     "no_warnings": True,
     "noplaylist": True,
-    "socket_timeout": 20,
+    "socket_timeout": 30,
+    "retries": 10,
+    "remote_components": ["ejs:github"],
 }
 
 
@@ -131,7 +133,8 @@ def download(url: str, height: int | None = None):
     try:
         with yt_dlp.YoutubeDL(opts) as ydl:
             ydl.download([url])
-    except Exception:
+    except Exception as e:
+        print("ERREUR yt-dlp :", e)
         shutil.rmtree(tmp, ignore_errors=True)
         raise DownloadError("Échec du téléchargement (site non supporté ou vidéo privée).")
     files = os.listdir(tmp)
